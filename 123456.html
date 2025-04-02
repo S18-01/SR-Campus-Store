@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusCart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #b86b6b;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-right input[type="text"] {
+            padding: 8px;
+            font-size: 14px;
+            margin-right: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .header-right button {
+            padding: 8px 15px;
+            font-size: 14px;
+            background-color: #ff6347;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .header-right button:hover {
+            background-color: #ff4500;
+        }
+
+        .cart-btn, .liked-btn {
+            padding: 8px 15px;
+            font-size: 14px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .cart-btn:hover, .liked-btn:hover {
+            background-color: #444;
+        }
+
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .category {
+            background-color: #f8f5f3;
+            padding: 20px;
+            width: 150px;
+            margin: 10px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .category:hover {
+            background-color: #8b82cf;
+        }
+
+        .category h3 {
+            margin-top: 10px;
+        }
+
+        main {
+            padding: 20px;
+            margin-bottom: 60px; 
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .product {
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .product img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .product button {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .product .like-btn {
+            background-color: #ff6347;
+        }
+
+        .product .add-to-cart-btn {
+            background-color: #28a745;
+        }
+
+        #cart {
+            display: none;
+            position: fixed;
+            top: 10%;
+            right: 10%;
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            width: 300px;
+            height: 400px;
+            overflow-y: scroll;
+        }
+
+        #cart h2 {
+            text-align: center;
+        }
+
+        #cart-items {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #cart-items li {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-item button {
+            background-color: #ff6347;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .checkout-options button {
+            margin: 10px 0;
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            width: 100%;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 10px; 
+            text-align: center;
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            font-size: 14px; 
+        }
+
+        .auth-container {
+            width: 20%;
+            padding: 20px;
+            background-color: #fff;
+            margin: 0;
+            position: fixed;
+            top: 10%;
+            right: 0;
+            display: none;
+        }
+
+        .auth-container h2 {
+            text-align: center;
+        }
+
+        .auth-container form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .auth-container form button {
+            padding: 10px;
+            width: 100%;
+            background-color: #333;
+            color: white;
+            border: none;
+        }
+
+        .payment-methods {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .payment-methods button {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            width: 100%;
+        }
+
+        .payment-form {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .payment-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .payment-form button {
+            padding: 10px;
+            width: 100%;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .liked-items {
+            display: none;
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #ccc;
+            position: fixed;
+            top: 10%;
+            right: 10%;
+            width: 300px;
+            height: 400px;
+            overflow-y: scroll;
+        }
+
+        .liked-items h2 {
+            text-align: center;
+        }
+
+        .liked-items img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin: 10px;
+        }
+
+        .liked-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .liked-item button {
+            background-color: #ff6347;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        
+.category img {
+    width: 80px; 
+    height: 80px; 
+    object-fit: cover; 
+    border-radius: 8px; 
+    margin-bottom: 10px; 
+}
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>CampusCart</h1>
+    <div class="header-right">
+        <input type="text" id="search-box" placeholder="Search for products..." onkeyup="searchProducts()">
+        <button onclick="toggleLogin()">Login</button>
+        <button onclick="toggleSignUp()">Sign Up</button>
+        <button class="liked-btn" id="liked-btn" onclick="toggleLikedItems()">Liked Items (0)</button>
+        <button class="cart-btn" id="cart-btn" onclick="toggleCart()">Cart (0)</button>
+    </div>
+</header>
+
+<main>
+    <div class="categories">
+        <div class="category" onclick="showProducts('Hair Bands')">
+            <img src="1.avif" alt="Hair Bands">
+            <h3>Hair Bands</h3>
+        </div>
+        <div class="category" onclick="showProducts('Bangles')">
+            <img src="5.jpg" alt="Bangles">
+            <h3>Bangles</h3>
+        </div>
+        <div class="category" onclick="showProducts('Bracelets')">
+            <img src="9.jpg" alt="Bracelets">
+            <h3>Bracelets</h3>
+        </div>
+        <div class="category" onclick="showProducts('Handbags')">
+            <img src="13.jpg" alt="Handbags">
+            <h3>Handbags</h3>
+        </div>
+        <div class="category" onclick="showProducts('Chocolates')">
+            <img src="17.jpg" alt="Chocolates">
+            <h3>Chocolates</h3>
+        </div>
+        <div class="category" onclick="showProducts('Pens')">
+            <img src="21.jpg" alt="Pens">
+            <h3>Pens</h3>
+        </div>
+        <div class="category" onclick="showProducts('Cool Drinks')">
+            <img src="25.jpg" alt="Cool Drinks">
+            <h3>Cool Drinks</h3>
+        </div>
+        <div class="category" onclick="showProducts('Face Masks')">
+            <img src="29.jpg" alt="Face Masks">
+            <h3>Face Masks</h3>
+        </div>
+        <div class="category" onclick="showProducts('Stationery')">
+            <img src="33.jpg" alt="Stationery">
+            <h3>Stationery</h3>
+        </div>
+    </div>
+
+    <h2>Products</h2>
+    <div class="products" id="products-list"></div>
+</main>
+
+<div id="cart">
+    <h2>Your Cart</h2>
+    <ul id="cart-items"></ul>
+    <div class="checkout-options">
+        <button onclick="proceedToCheckout()">Proceed to Checkout</button>
+    </div>
+    <div class="payment-methods" id="payment-methods">
+        <h3>Select Payment Method</h3>
+        <button onclick="showPaymentForm('Credit Card')">Credit Card</button>
+        <button onclick="showPaymentForm('Debit Card')">Debit Card</button>
+        <button onclick="selectPayment('Phone pay')">Phone Pay</button>
+    </div>
+    <div class="payment-form" id="payment-form">
+        <h3 id="payment-form-title"></h3>
+        <input type="text" id="card-number" placeholder="Card Number" required>
+        <input type="text" id="expiry-date" placeholder="Expiry Date (MM/YY)" required>
+        <input type="text" id="cvv" placeholder="CVV" required>
+        <button onclick="processPayment()">Submit Payment</button>
+    </div>
+    
+</div>
+
+<div class="liked-items" id="liked-items">
+    <h2>Your Liked Items</h2>
+    <div id="liked-items-list"></div>
+</div>
+
+<div class="auth-container" id="signup">
+    <h2>Sign Up</h2>
+    <form id="signup-form">
+        <input type="email" id="signup-email" placeholder="Email" required><br>
+        <input type="text" id="signup-phone" placeholder="Phone Number" required><br>
+        <input type="password" id="signup-password" placeholder="Password" required><br>
+        <button type="submit">Sign Up</button>
+    </form>
+</div>
+
+<div class="auth-container" id="login">
+    <h2>Login</h2>
+    <form id="login-form">
+        <input type="email" id="login-email" placeholder="Email" required><br>
+        <input type="password" id="login-password" placeholder="Password" required><br>
+        <button type="submit">Log In</button>
+    </form>
+</div>
+
+<footer>
+    <p>&copy; 2025 CampusCart E-Commerce</p>
+</footer>
+
+<script>
+    let isLoggedIn = false;
+    let cart = [];
+    let likedItems = [];
+
+    const products = [
+        
+        { name: 'Silk Hair Band', image: '2.jpg', price: '₹199', category: 'Hair Bands' },
+        { name: 'Velvet Hair Band', image: '3.jpg', price: '₹149', category: 'Hair Bands' },
+        { name: 'Pearl Hair Band', image: '4.jpg', price: '₹249', category: 'Hair Bands' },
+
+        
+        { name: 'Gold-Plated Bangles', image: '6.jpg', price: '₹499', category: 'Bangles' },
+        { name: 'Silver Bangles', image: '7.jpg', price: '₹399', category: 'Bangles' },
+        { name: 'Glass Bangles', image: '8.jpg', price: '₹299', category: 'Bangles' },
+
+        
+        { name: 'Leather Bracelet', image: '10.jpg', price: '₹349', category: 'Bracelets' },
+        { name: 'Beaded Bracelet', image: '11.jpg', price: '₹199', category: 'Bracelets' },
+        { name: 'Metal Bracelet', image: '12.jpg', price: '₹449', category: 'Bracelets' },
+
+        
+        { name: 'Leather Handbag', image: '14.jpg', price: '₹1299', category: 'Handbags' },
+        { name: 'Tote Bag', image: '15.jpg', price: '₹899', category: 'Handbags' },
+        { name: 'Clutch Bag', image: '16.jpg', price: '₹699', category: 'Handbags' },
+
+        
+        { name: 'Dark Chocolate', image: '18.jpg', price: '₹99', category: 'Chocolates' },
+        { name: 'Milk Chocolate', image: '19.jpg', price: '₹79', category: 'Chocolates' },
+        { name: 'White Chocolate', image: '20.jpg', price: '₹89', category: 'Chocolates' },
+        { name: 'Dairy Milk', image: '37.jpg', price: '₹149', category: 'Chocolates' },
+        { name: 'Kit-Kat', image: '38.jpg', price: '₹59', category: 'Chocolates' },
+        { name: 'Snickers', image: '39.jpg', price: '₹39', category: 'Chocolates' },
+
+        
+        { name: 'Ballpoint Pen', image: '22.jpg', price: '₹20', category: 'Pens' },
+        { name: 'Gel Pen', image: '23.jpg', price: '₹30', category: 'Pens' },
+        { name: 'Fountain Pen', image: '24.jpg', price: '₹199', category: 'Pens' },
+
+        
+        { name: 'Cola', image: '26.jpg', price: '₹30', category: 'Cool Drinks' },
+        { name: 'Orange Soda', image: '27.jpg', price: '₹35', category: 'Cool Drinks' },
+        { name: 'Lemonade', image: '28.jpg', price: '₹40', category: 'Cool Drinks' },
+
+        
+        { name: 'Cotton Face Mask', image: '30.jpg', price: '₹20', category: 'Face Masks' },
+        { name: 'Surgical Mask', image: '31.jpg', price: '₹10', category: 'Face Masks' },
+        { name: 'N95 Mask', image: '32.jpg', price: '₹100', category: 'Face Masks' },
+
+        
+        { name: 'Notebook', image: '34.jpg', price: '₹40', category: 'Stationery' },
+        { name: 'Sticky Notes', image: '35.jpg', price: '₹50', category: 'Stationery' },
+        { name: 'Highlighters', image: '36.jpg', price: '₹80', category: 'Stationery' },
+        { name: 'Stapler', image: '40.jpg', price: '₹50', category: 'Stationery' },
+    ];
+
+    function toggleCart() {
+        const cartElement = document.getElementById('cart');
+        cartElement.style.display = cartElement.style.display === 'block' ? 'none' : 'block';
+        displayCartItems();
+    }
+
+    function toggleLikedItems() {
+        const likedItemsElement = document.getElementById('liked-items');
+        likedItemsElement.style.display = likedItemsElement.style.display === 'block' ? 'none' : 'block';
+        displayLikedItems();
+    }
+
+    function toggleLogin() {
+        const loginForm = document.getElementById('login');
+        loginForm.style.display = loginForm.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function toggleSignUp() {
+        const signUpForm = document.getElementById('signup');
+        signUpForm.style.display = signUpForm.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function showProducts(category) {
+        const filteredProducts = products.filter(product => product.category === category);
+        const productsList = document.getElementById('products-list');
+        productsList.innerHTML = '';
+        filteredProducts.forEach(product => {
+            const productElement = document.createElement('div');
+            productElement.className = 'product';
+            productElement.innerHTML = `
+                <img src="${product.image}" alt="${product.name}">
+                <h3>${product.name}</h3>
+                <p>${product.price}</p>
+                <button class="like-btn" onclick="likeItem('${product.name}', '${product.image}')">Like</button>
+                <button class="add-to-cart-btn" onclick="addToCart('${product.name}', '${product.price}')">Add to Cart</button>
+            `;
+            productsList.appendChild(productElement);
+        });
+    }
+
+    function addToCart(productName, productPrice) {
+        cart.push({ name: productName, price: productPrice });
+        updateCartButton();
+        displayCartItems();
+    }
+
+    function likeItem(productName, productImage) {
+        if (!likedItems.some(item => item.name === productName)) {
+            likedItems.push({ name: productName, image: productImage });
+            updateLikedButton();
+            displayLikedItems();
+        }
+        alert(`You liked ${productName}`);
+    }
+
+    function removeFromCart(index) {
+        cart.splice(index, 1);
+        updateCartButton();
+        displayCartItems();
+    }
+
+    function removeFromLikedItems(index) {
+        likedItems.splice(index, 1);
+        updateLikedButton();
+        displayLikedItems();
+    }
+
+    function updateCartButton() {
+        const cartButton = document.getElementById('cart-btn');
+        cartButton.innerText = `Cart (${cart.length})`;
+    }
+
+    function updateLikedButton() {
+        const likedButton = document.getElementById('liked-btn');
+        likedButton.innerText = `Liked Items (${likedItems.length})`;
+    }
+
+    function displayCartItems() {
+        const cartItemsList = document.getElementById('cart-items');
+        cartItemsList.innerHTML = '';
+        cart.forEach((item, index) => {
+            const cartItemElement = document.createElement('li');
+            cartItemElement.innerHTML = `
+                <span>${item.name} - ${item.price}</span>
+                <button onclick="removeFromCart(${index})">Remove</button>
+            `;
+            cartItemsList.appendChild(cartItemElement);
+        });
+    }
+
+    function displayLikedItems() {
+        const likedItemsList = document.getElementById('liked-items-list');
+        likedItemsList.innerHTML = '';
+        likedItems.forEach((item, index) => {
+            const likedItemElement = document.createElement('div');
+            likedItemElement.className = 'liked-item';
+            likedItemElement.innerHTML = `
+                <img src="${item.image}" alt="${item.name}">
+                <p>${item.name}</p>
+                <button onclick="removeFromLikedItems(${index})">Remove</button>
+            `;
+            likedItemsList.appendChild(likedItemElement);
+        });
+    }
+
+    function searchProducts() {
+        const searchQuery = document.getElementById('search-box').value.toLowerCase();
+        const filteredProducts = products.filter(product => product.name.toLowerCase().includes(searchQuery));
+        const productsList = document.getElementById('products-list');
+        productsList.innerHTML = '';
+        filteredProducts.forEach(product => {
+            const productElement = document.createElement('div');
+            productElement.className = 'product';
+            productElement.innerHTML = `
+                <img src="${product.image}" alt="${product.name}">
+                <h3>${product.name}</h3>
+                <p>${product.price}</p>
+                <button class="like-btn" onclick="likeItem('${product.name}', '${product.image}')">Like</button>
+                <button class="add-to-cart-btn" onclick="addToCart('${product.name}', '${product.price}')">Add to Cart</button>
+            `;
+            productsList.appendChild(productElement);
+        });
+    }
+
+    function proceedToCheckout() {
+        document.getElementById('payment-methods').style.display = 'block';
+    }
+
+    function showPaymentForm(paymentMethod) {
+        document.getElementById('payment-form-title').innerText = `Pay with ${paymentMethod}`;
+        document.getElementById('payment-form').style.display = 'block';
+    }
+
+    function processPayment() {
+        const cardNumber = document.getElementById('card-number').value;
+        const expiryDate = document.getElementById('expiry-date').value;
+        const cvv = document.getElementById('cvv').value;
+
+        if (cardNumber && expiryDate && cvv) {
+            alert(`Payment successful!`);
+            cart = []; 
+            updateCartButton();
+            displayCartItems();
+            document.getElementById('payment-form').style.display = 'none';
+        } else {
+            alert('Please fill in all payment details.');
+        }
+    }
+
+    
+    function selectPayment(method) {
+        alert(`Payment method selected: ${method}`);
+        
+    }
+
+
+</script>
+
+</body>
+</html>
